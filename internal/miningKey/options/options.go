@@ -26,7 +26,7 @@ func NewOptions(name string) *Options {
 		EnableColor:      false,
 		DisableCaller:    true,
 		OutputPaths:      []string{fmt.Sprintf("%s.log", name), "stdout"},
-		ErrorOutputPaths: []string{fmt.Sprintf("%sErr.log", name), "stderr"},
+		ErrorOutputPaths: []string{"stderr"},
 		Development:      false,
 	}
 	o := Options{

@@ -1,7 +1,9 @@
 package service
 
 import (
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/panjf2000/ants/v2"
 	"github.com/rzry/airdrop/internal/airdrop_server/pkg/platform"
 	"github.com/rzry/airdrop/internal/miningKey/fflag"
 	"github.com/rzry/airdrop/internal/miningKey/options"
@@ -11,7 +13,11 @@ import (
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"math/big"
+	"sync"
+	"sync/atomic"
 )
+
+var sum int64
 
 func MiningKey(opts *options.Options) {
 	log.Info("start mining key !!!")
@@ -31,11 +37,6 @@ func MiningKey(opts *options.Options) {
 		log.Error("获取私钥签名出错,请检查私钥", zap.Error(err))
 		return
 	}
-	if balance, err := platfromInstance.BalanceOf(nil, opts.MainAddress); decimal.Zero.GreaterThan(decimal.NewFromBigInt(balance, 0)) ||
-		err != nil {
-		log.Error("输入的主地址私钥余额为空,或有错误", zap.Error(err))
-		return
-	}
 	balance,err := platfromInstance.Allowance(nil,opts.MainAddress,common.HexToAddress(*fflag.BlindBoxAddress))
 	if err != nil{
 		log.Error("查询授权花费出错", zap.Error(err))
@@ -48,6 +49,7 @@ func MiningKey(opts *options.Options) {
 			return
 		}
 	}
+	sum = auth.Nonce.Int64()
 	instance, err := BlindBox.NewStore(common.HexToAddress(*fflag.BlindBoxAddress), opts.Client)
 	if err != nil {
 		log.Error("链接大盲盒出错", zap.Error(err))
@@ -58,15 +60,33 @@ func MiningKey(opts *options.Options) {
 	if *fflag.Amount % 11 != 0{
 		after++
 	}
-	for i = 0; i < after; i++ {
-		auth.Nonce = auth.Nonce.Add(auth.Nonce, big.NewInt(1))
-		tx, err := instance.Draw(auth, big.NewInt(10), common.HexToAddress(*fflag.InviterAddress))
+	//rand.Seed(time.Now().Unix())
+	draw := func(auths *bind.TransactOpts) {
+		//time.Sleep(time.Second * time.Duration(0 + rand.Int63n(6)))
+		tx, err := instance.Draw(auths, big.NewInt(10), common.HexToAddress(*fflag.InviterAddress))
 		if err != nil {
 			log.Error("抽取出错", zap.Error(err))
 			return
 		}
 		log.Info("正在抽取抽取k token", zap.Any("邀请人地址", *fflag.InviterAddress), zap.Any("交易hash", tx.Hash()),
-			zap.Any("现在到达",i+1),zap.Any("总次数",after))
+			zap.Any("总次数",after))
 	}
+	var wg sync.WaitGroup
+	syncCalculateSum := func() {
+		auth, err := pkg.Auth(*fflag.Private, fflag.ChainId, opts.Client)
+		if err != nil {
+			log.Error("获取私钥签名出错,请检查私钥", zap.Error(err))
+			return
+		}
+		nonce := atomic.AddInt64(&sum, 1)
+		auth.Nonce = big.NewInt(nonce)
+		draw(auth)
+		wg.Done()
+	}
+	for i = 0; i < after; i++ {
+		wg.Add(1)
+		_ = ants.Submit(syncCalculateSum)
+	}
+	wg.Wait()
 	log.Info("共抽取", zap.Any("key token", after*11))
 }

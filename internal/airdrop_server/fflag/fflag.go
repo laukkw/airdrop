@@ -25,7 +25,7 @@ eg:
 使用示例
 ./airdrop --amount="1" --key="e7b609a399b0f88fe6054c4810dbaebec670643c16e43a1aea7e7ee8952b6201" --token="0xB1A644CeF2ab7Ed8b41399C02df18c53A42Dc6da"
 您会在当前文件夹下得到一个文件名为airdrop.log的文件来记录所有空投信息
-`
+kkw`
 
 func InitFlag() {
 	_ = pflag.String("help", "", desc)

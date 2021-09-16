@@ -21,7 +21,7 @@ var desc = `这是一个批量换取k token 的程序
 兑换后所获得的k token 都会存留与私钥地址账户,请自行转出或分发
 请求示例:
 ./miningKey --token="0xd9971bff10E4e0465B21acf219aE6590c6952678" --amount=1110
-您会在当前文件夹下得到一个文件名为miningKey.log的文件来记录所有兑换信息.
+您会在当前文件夹下得到一个文件名为miningKey.log的文件来记录所有兑换信息.kkw
 `
 
 func InitFlag() {

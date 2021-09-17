@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/panjf2000/ants/v2"
 	"github.com/rzry/airdrop/internal/airdrop_server/pkg/platform"
@@ -23,7 +22,6 @@ func MiningKey(opts *options.Options) {
 	log.Info("start mining key !!!")
 	log.Infof("使用私钥地址:%s,换取token数量:%v,使用平台币币种:%s,大盲盒地址%s,邀请人地址:%s",
 		opts.MainAddress,*fflag.Amount,*fflag.Token,*fflag.BlindBoxAddress,*fflag.InviterAddress)
-	//调用合约 来进行抽卡
 	if !pkg.YorN(){
 		return
 	}
@@ -60,19 +58,10 @@ func MiningKey(opts *options.Options) {
 	if *fflag.Amount % 11 != 0{
 		after++
 	}
-	//rand.Seed(time.Now().Unix())
-	draw := func(auths *bind.TransactOpts) {
-		//time.Sleep(time.Second * time.Duration(0 + rand.Int63n(6)))
-		tx, err := instance.Draw(auths, big.NewInt(10), common.HexToAddress(*fflag.InviterAddress))
-		if err != nil {
-			log.Error("抽取出错", zap.Error(err))
-			return
-		}
-		log.Info("正在抽取抽取k token", zap.Any("邀请人地址", *fflag.InviterAddress), zap.Any("交易hash", tx.Hash()),
-			zap.Any("总次数",after))
-	}
+
 	var wg sync.WaitGroup
 	syncCalculateSum := func() {
+		defer wg.Done()
 		auth, err := pkg.Auth(*fflag.Private, fflag.ChainId, opts.Client)
 		if err != nil {
 			log.Error("获取私钥签名出错,请检查私钥", zap.Error(err))
@@ -80,12 +69,20 @@ func MiningKey(opts *options.Options) {
 		}
 		nonce := atomic.AddInt64(&sum, 1)
 		auth.Nonce = big.NewInt(nonce)
-		draw(auth)
-		wg.Done()
+		tx, err := instance.Draw(auth, big.NewInt(10), common.HexToAddress(*fflag.InviterAddress))
+		if err != nil {
+			log.Error("抽取出错", zap.Error(err))
+			return
+		}
+		log.Info("正在抽取抽取k token", zap.Any("邀请人地址", *fflag.InviterAddress), zap.Any("交易hash", tx.Hash()),
+			zap.Any("总次数",after))
 	}
+	p, _ := ants.NewPoolWithFunc(int(*fflag.Goroutine), func(i interface{}) {
+		syncCalculateSum()
+	})
 	for i = 0; i < after; i++ {
 		wg.Add(1)
-		_ = ants.Submit(syncCalculateSum)
+		_ = p.Invoke(i)
 	}
 	wg.Wait()
 	log.Info("共抽取", zap.Any("key token", after*11))

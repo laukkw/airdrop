@@ -14,6 +14,7 @@ var (
 	WaitTime *int64
 	Url      string
 	ChainId  int64
+	Goroutine *int64
 )
 
 var desc = `这是一个空投机器人,你需要根据实际情况填写所需参数,请仔细阅读每参数的描述
@@ -34,6 +35,7 @@ func InitFlag() {
 	Token = pflag.String("token", "0xd9971bff10E4e0465B21acf219aE6590c6952678", "填入需要drop的token")
 	Path = pflag.String("path", "./path.txt", "填入空投人地址文件的路径,默认./path.txt(当前文件夹下 path.txt文件)")
 	WaitTime = pflag.Int64("wait", 5, "输入等待时间,等待时间到期执行空投操作,单位:s")
+	Goroutine = pflag.Int64("goroutine", 100, "goroutine池容量(因测试网与正式网有差,所以如果并发请求错误过多,请降低这个值,测试网100是可以完美运行,如果请求数量很多,那求稳考虑,请降低这个值在100以下)")
 	pflag.Parse()
 	prompt := promptui.Select{
 		Label: "Select Your NetWork",

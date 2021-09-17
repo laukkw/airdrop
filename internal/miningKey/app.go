@@ -8,17 +8,20 @@ import (
 	"github.com/rzry/airdrop/pkg"
 	"github.com/rzry/airdrop/pkg/log"
 	"os"
+	"sync"
 )
-
+var once sync.Once
 func NewApp(basename string) {
 	opts := options.NewOptions(basename)
 	fflag.InitFlag()
-	client, err := ethclient.Dial(fflag.Url)
-	if err != nil {
-		os.Exit(1)
-	}
-	opts.Client = client
-	opts.MainAddress = pkg.PrivateToAddress(*fflag.Private)
+	once.Do(func() {
+		client, err := ethclient.Dial(fflag.Url)
+		if err != nil {
+			os.Exit(1)
+		}
+		opts.Client = client
+		opts.MainAddress = pkg.PrivateToAddress(*fflag.Private)
+	})
 	run(opts)
 	return
 }

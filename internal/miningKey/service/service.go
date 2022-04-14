@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/panjf2000/ants/v2"
 	"github.com/rzry/airdrop/internal/airdrop_server/pkg/platform"
@@ -42,6 +43,12 @@ func MiningKey(opts *options.Options) {
 	}
 	if decimal.NewFromBigInt(balance,0).Equal(decimal.Zero){
 		auth.Nonce = auth.Nonce.Add(auth.Nonce, big.NewInt(1))
+		balance ,err := opts.Client.BalanceAt(context.Background(),opts.MainAddress,nil)
+		if err != nil{
+			log.Error("get balance of err",zap.Error(err))
+			return
+		}
+		log.Info("查询到eth余额为",zap.Any("balance",balance))
 		if _, err := platfromInstance.Approve(auth, common.HexToAddress(*fflag.BlindBoxAddress), pkg.ToEthers("1", 50).BigInt()); err != nil {
 			log.Error("approve 错误", zap.Error(err))
 			return

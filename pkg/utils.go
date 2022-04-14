@@ -54,7 +54,7 @@ func Auth(key string, chainId int64, client *ethclient.Client) (*bind.TransactOp
 	}
 	auth.Nonce = big.NewInt(int64(nonce - 1))
 	auth.Value = big.NewInt(0)       // in wei
-	auth.GasLimit = uint64(20500000) // in units
+	auth.GasLimit = uint64(205000) // in units
 	auth.GasPrice = gasPrice
 	auth.Context = context.Background()
 	return auth, err

@@ -35,7 +35,7 @@ func InitFlag() {
 	Token = pflag.String("token", "0xd9971bff10E4e0465B21acf219aE6590c6952678", "填入需要drop的token")
 	Path = pflag.String("path", "./path.txt", "填入空投人地址文件的路径,默认./path.txt(当前文件夹下 path.txt文件)")
 	WaitTime = pflag.Int64("wait", 5, "输入等待时间,等待时间到期执行空投操作,单位:s")
-	Goroutine = pflag.Int64("goroutine", 100, "goroutine池容量(因测试网与正式网有差,所以如果并发请求错误过多,请降低这个值,测试网100是可以完美运行,如果请求数量很多,那求稳考虑,请降低这个值在100以下)")
+	Goroutine = pflag.Int64("goroutine", 10, "goroutine池容量(因测试网与正式网有差,所以如果并发请求错误过多,请降低这个值,测试网100是可以完美运行,如果请求数量很多,那求稳考虑,请降低这个值在100以下)")
 	pflag.Parse()
 	prompt := promptui.Select{
 		Label: "Select Your NetWork",
@@ -43,7 +43,8 @@ func InitFlag() {
 			"heco_testnet",
 			"heco",
 			"bsc",
-			"goerli"},
+			"goerli",
+		"bsc1","bsc2","bsc3","bsc4"},
 	}
 	_, result, err := prompt.Run()
 	if err != nil {
@@ -62,7 +63,7 @@ type NetWork struct {
 func net_worl() map[string]NetWork {
 	mk := make(map[string]NetWork, 0)
 	mk["bsc_testnet"] = NetWork{
-		Url:     "https://data-seed-prebsc-2-s3.binance.org:8545",
+		Url:     "wss://data-seed-prebsc-1-s2.binance.org:8545",
 		ChainId: 97,
 	}
 	mk["heco_testnet"] = NetWork{
@@ -74,7 +75,23 @@ func net_worl() map[string]NetWork {
 		ChainId: 128,
 	}
 	mk["bsc"] = NetWork{
-		Url:     "https://bsc-dataseed1.binance.org",
+		Url:     "https://bsc-dataseed3.ninicoin.io/",
+		ChainId: 56,
+	}
+	mk["bsc1"] = NetWork{
+		Url:     "https://bsc-dataseed1.ninicoin.io/",
+		ChainId: 56,
+	}
+	mk["bsc2"] = NetWork{
+		Url:     "https://bsc-dataseed2.ninicoin.io/",
+		ChainId: 56,
+	}
+	mk["bsc3"] = NetWork{
+		Url:     "https://bsc-dataseed1.defibit.io/",
+		ChainId: 56,
+	}
+	mk["bsc4"] = NetWork{
+		Url:     "https://bsc-dataseed1.binance.org/",
 		ChainId: 56,
 	}
 	mk["goerli"] = NetWork{

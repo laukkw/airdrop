@@ -59,7 +59,7 @@ type NetWork struct {
 func net_worl() map[string]NetWork {
 	mk := make(map[string]NetWork, 0)
 	mk["bsc_testnet"] = NetWork{
-		Url:     "https://data-seed-prebsc-2-s3.binance.org:8545",
+		Url:     "https://data-seed-prebsc-2-s2.binance.org:8545",
 		ChainId: 97,
 	}
 	mk["heco_testnet"] = NetWork{
@@ -71,7 +71,7 @@ func net_worl() map[string]NetWork {
 		ChainId: 128,
 	}
 	mk["bsc"] = NetWork{
-		Url:     "https://bsc-dataseed1.binance.org",
+		Url:     "https://bsc-dataseed3.ninicoin.io/",
 		ChainId: 56,
 	}
 	mk["goerli"] = NetWork{

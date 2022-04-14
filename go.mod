@@ -7,10 +7,11 @@ require (
 	github.com/manifoldco/promptui v0.8.0
 	github.com/marmotedu/component-base v1.0.1
 	github.com/panjf2000/ants/v2 v2.4.6
+	github.com/rzry/kwstart v0.0.2
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/pflag v1.0.5
-	go.uber.org/zap v1.19.0
+	go.uber.org/zap v1.19.1
 	k8s.io/klog/v2 v2.20.0
 )
 
@@ -42,10 +43,8 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/sys v0.0.0-20210816183151-1e6c022a8912 // indirect
 	golang.org/x/time v0.0.0-20210611083556-38a9dc6acbc6 // indirect
-	golang.org/x/tools v0.1.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	k8s.io/klog v1.0.0 // indirect

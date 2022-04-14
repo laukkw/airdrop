@@ -10,7 +10,9 @@ import (
 	"os"
 	"sync"
 )
+
 var once sync.Once
+
 func NewApp(basename string) {
 	opts := options.NewOptions(basename)
 	fflag.InitFlag()

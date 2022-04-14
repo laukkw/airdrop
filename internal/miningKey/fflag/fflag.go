@@ -14,7 +14,7 @@ var (
 	InviterAddress  *string
 	Url             string
 	ChainId         int64
-	Goroutine *int64
+	Goroutine       *int64
 )
 
 var desc = `这是一个批量换取k token 的程序
@@ -32,7 +32,7 @@ func InitFlag() {
 	Token = pflag.String("token", "0xd9971bff10E4e0465B21acf219aE6590c6952671", "填入平台币的token")
 	BlindBoxAddress = pflag.String("blindBoxAddress", "0xaf69F26d4E76A73A73bA14b799189Fa54577CA41", "填入大盲盒地址")
 	InviterAddress = pflag.String("inviterAddress", "0x4936e6A6A989b4B6101D7Bd70a8e494649853360", "邀请人地址")
-	Goroutine = pflag.Int64("goroutine", 50, "goroutine池容量(因测试网与正式网有差,所以如果并发请求错误过多,请降低这个值,测试网50是可以完美运行,如果请求数量很多,那求稳考虑,请降低这个值在50左右)")
+	Goroutine = pflag.Int64("goroutine", 10, "goroutine池容量(因测试网与正式网有差,所以如果并发请求错误过多,请降低这个值,测试网50是可以完美运行,如果请求数量很多,那求稳考虑,请降低这个值在50左右)")
 	pflag.Parse()
 	prompt := promptui.Select{
 		Label: "Select Your NetWork",

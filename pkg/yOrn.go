@@ -5,10 +5,10 @@ import (
 	"os"
 )
 
-func YorN()bool{
+func YorN() bool {
 	prompt := promptui.Select{
 		Label: "!!!请查看终端参数,确认输入参数是否正确!!!,继续请选择yes",
-		Items: []string{"yes","no"},
+		Items: []string{"yes", "no"},
 	}
 	_, result, err := prompt.Run()
 	if err != nil {

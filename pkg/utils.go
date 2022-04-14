@@ -46,15 +46,18 @@ func Auth(key string, chainId int64, client *ethclient.Client) (*bind.TransactOp
 	if err != nil {
 		log.Println("call  err ", err)
 	}
-
 	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(chainId))
 	if err != nil {
 		log.Println("call  err ", err)
 		return nil, err
 	}
-	auth.Nonce = big.NewInt(int64(nonce - 1))
-	auth.Value = big.NewInt(0)       // in wei
+	//将nonce改回去
+	//auth.Nonce = big.NewInt(int64(nonce - 1))
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0) // in wei
+
 	auth.GasLimit = uint64(205000) // in units
+
 	auth.GasPrice = gasPrice
 	auth.Context = context.Background()
 	return auth, err
